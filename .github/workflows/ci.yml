@@ -1,5 +1,5 @@
 
-name: Employee Portal CI Pipeline
+name: Employee Portal CI-CD Pipeline
 
 on:
   push:
@@ -10,6 +10,15 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   validate:
     name: Validate Employee Portal
@@ -19,9 +28,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Validate HTML title
-        run: grep -qi "<title>" index.html
-        
       - name: Check required project files
         run: |
           test -f index.html
@@ -29,5 +35,31 @@ jobs:
           test -f script.js
           echo "All required files are present!"
 
-      - name: Pipeline success message
-        run: echo "Employee Portal CI Pipeline completed successfully!"
+      - name: Validate HTML title
+        run: grep -qi "<title>" index.html
+
+      - name: Validation success message
+        run: echo "All validations passed!"
+
+  deploy:
+    name: Deploy Employee Portal
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Upload website files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
