@@ -19,6 +19,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      - name: Validate HTML title
+        run: grep -qi "<title>" index.html
+        
       - name: Check required project files
         run: |
           test -f index.html
