@@ -58,6 +58,9 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: Display deployment environment
+        run: echo "Deploying to ${{ vars.APP_ENV }}"
+
       - name: Upload website files
         uses: actions/upload-pages-artifact@v4
         with:
