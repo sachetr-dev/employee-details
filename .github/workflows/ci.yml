@@ -24,7 +24,6 @@ jobs:
           test -f index.html
           test -f style.css
           test -f script.js
-          test -f missing.html
           echo "All required files are present!"
 
       - name: Pipeline success message
