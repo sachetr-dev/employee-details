@@ -61,6 +61,17 @@ jobs:
       - name: Display deployment environment
         run: echo "Deploying to ${{ vars.APP_ENV }}"
 
+      - name: Verify secret is configured
+        env:
+          DEMO_TOKEN: ${{ secrets.DEMO_TOKEN }}
+        run: |
+          if [ -n "$DEMO_TOKEN" ]; then
+            echo "Secret is configured successfully!"
+          else
+            echo "Secret is missing!"
+            exit 1
+          fi
+      
       - name: Upload website files
         uses: actions/upload-pages-artifact@v4
         with:
