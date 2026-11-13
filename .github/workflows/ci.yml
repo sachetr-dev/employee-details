@@ -1,0 +1,30 @@
+
+name: Employee Portal CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate Employee Portal
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Check required project files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          echo "All required files are present!"
+
+      - name: Pipeline success message
+        run: echo "Employee Portal CI Pipeline completed successfully!"
